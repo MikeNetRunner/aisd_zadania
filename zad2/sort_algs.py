@@ -161,6 +161,60 @@ def counting_sort(arr: List[int]) -> None:
             count[i] -= 1
 
 
+# === BubbleSort ===
+def bubble_sort(arr: List[int]) -> None:
+    n = len(arr)
+    for i in range(n):
+        swapped = False
+        for j in range(0, n - i - 1):
+            if arr[j] > arr[j + 1]:
+                arr[j], arr[j + 1] = arr[j + 1], arr[j]
+                swapped = True
+        if not swapped:
+            break
+
+
+# === BinarySort ===
+def binary_insert(arr: List[int], value: int) -> None:
+    low, high = 0, len(arr)
+    while low < high:
+        mid = (low + high) // 2
+        if arr[mid] < value:
+            low = mid + 1
+        else:
+            high = mid
+    arr.insert(low, value)
+
+
+def binary_sort(arr: List[int]) -> None:
+    sorted_list = []
+    for num in arr:
+        binary_insert(sorted_list, num)
+    arr[:] = sorted_list
+
+
+# === BucketSort ===
+def bucket_sort(arr: List[int]) -> None:
+    if not arr:
+        return
+
+    bucket_count = len(arr)
+    max_val, min_val = max(arr), min(arr)
+    bucket_range = (max_val - min_val) / bucket_count
+    buckets = [[] for _ in range(bucket_count)]
+
+    for num in arr:
+        index = int((num - min_val) / bucket_range)
+        if index == bucket_count:  # Handle edge case for max value
+            index -= 1
+        buckets[index].append(num)
+
+    arr.clear()
+    for bucket in buckets:
+        bucket.sort()
+        arr.extend(bucket)
+
+
 # === Load data ===
 def load_data_from_files(directory: str) -> List[Tuple[str, List[int]]]:
     all_data = []
@@ -179,7 +233,7 @@ console = Console()
 
 # === Time measuring ===
 if __name__ == "__main__":
-    directory = "/home/linux/tech_stack/python/algorithms/algorithms_part1/ex3"
+    directory = "/home/linux/tech_stack/python/algorithms/algorithms_part1/kfiles"
     excel_folder = "excel"
     os.makedirs(excel_folder, exist_ok=True)
     datasets = load_data_from_files(directory)
@@ -191,6 +245,9 @@ if __name__ == "__main__":
         "SelectionSort": selection_sort,
         "HeapSort": heap_sort,
         "CountingSort": counting_sort,
+        "BubbleSort": bubble_sort,
+        "BinarySort": binary_sort,
+        "BucketSort": bucket_sort,
     }
 
     results = []
