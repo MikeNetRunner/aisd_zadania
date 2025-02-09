@@ -1,11 +1,13 @@
+import os
+import random
 import sys
 import time
-import random
-import os
+from typing import Callable, Tuple
+
+import numpy as np
 import matplotlib.pyplot as plt
 from rich.console import Console
 from rich.table import Table
-from typing import Callable, Tuple
 
 sys.setrecursionlimit(1000000)
 
@@ -173,15 +175,30 @@ def benchmark(size=100000):
     search_times = [results[struct][1] for struct in structures]
     delete_times = [results[struct][2] for struct in structures]
 
-    plt.figure(figsize=(10, 5))
-    plt.bar(structures, insert_times, color='magenta', label='Insert')
-    plt.bar(structures, search_times, color='green', label='Search', bottom=insert_times)
-    plt.bar(structures, delete_times, color='yellow', label='Delete', bottom=[i+s for i, s in zip(insert_times, search_times)])
-    plt.xlabel("Data Structure")
-    plt.ylabel("Time (s)")
-    plt.title("Comparison of Operation Times")
+    # Set up the positions for each group of bars
+    x = np.arange(len(structures))  # the label locations
+    width = 0.25  # the width of the bars
+
+    # Create the plot
+    plt.figure(figsize=(12, 7))  # Increase the figure size for more space
+
+    # Plot the bars for each operation
+    plt.bar(x - width, insert_times, width, color='magenta', label='Insert')
+    plt.bar(x, search_times, width, color='green', label='Search')
+    plt.bar(x + width, delete_times, width, color='yellow', label='Delete')
+
+    # Adding labels, title, and legend
+    plt.xlabel("Data Structure", fontsize=12)
+    plt.ylabel("Time (s)", fontsize=12)
+    plt.title("Comparison of Operation Times for Different Data Structures", fontsize=14)
+    plt.xticks(x, structures, rotation=45, ha='right', fontsize=10)  # Rotate labels and adjust alignment
     plt.legend()
-    plt.xticks(rotation=30)
+    plt.grid(True, axis='y')
+
+    # Make sure layout is tight to avoid cutting off labels
+    plt.tight_layout()
+
+    # Show the plot
     plt.show()
 
 if __name__ == "__main__":
